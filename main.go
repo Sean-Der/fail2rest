@@ -1,13 +1,13 @@
 package main
 
-import ("fmt")
+import (
+	"github.com/gorilla/mux"
+	"net/http"
+)
 
 func main() {
-	x := make([]string, 0)
-	x = append(x, "status")
-	output, err := fail2banRequest(x)
-
-	fmt.Println(output)
-	fmt.Println(err)
-
+	r := mux.NewRouter()
+	GlobalHandler(r.PathPrefix("/global").Subrouter())
+	http.Handle("/", r)
+	http.ListenAndServe(":5000", nil)
 }
