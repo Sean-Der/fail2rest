@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func GlobalStatusHandler(res http.ResponseWriter, req *http.Request) {
+func BasicStatusHandler(res http.ResponseWriter, req *http.Request) {
 	fail2banInput := make([]string, 1)
 	fail2banInput[0] = "status"
 
@@ -26,7 +26,7 @@ func GlobalStatusHandler(res http.ResponseWriter, req *http.Request) {
 	res.Write(encodedOutput)
 }
 
-func GlobalPingHandler(res http.ResponseWriter, req *http.Request) {
+func BasicPingHandler(res http.ResponseWriter, req *http.Request) {
 	fail2banInput := make([]string, 1)
 	fail2banInput[0] = "ping"
 
@@ -44,7 +44,7 @@ func GlobalPingHandler(res http.ResponseWriter, req *http.Request) {
 	res.Write(encodedOutput)
 }
 
-func GlobalHandler(globalRouter *mux.Router) {
-	globalRouter.HandleFunc("/status", GlobalStatusHandler).Methods("GET")
-	globalRouter.HandleFunc("/ping", GlobalPingHandler).Methods("GET")
+func BasicHandler(basicRouter *mux.Router) {
+	basicRouter.HandleFunc("/status", BasicStatusHandler).Methods("GET")
+	basicRouter.HandleFunc("/ping", BasicPingHandler).Methods("GET")
 }

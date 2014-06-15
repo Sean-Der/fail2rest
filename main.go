@@ -29,7 +29,7 @@ func main() {
 	}
 
 	r := mux.NewRouter()
-	GlobalHandler(r.PathPrefix("/global").Subrouter())
+	BasicHandler(r.PathPrefix("/basic").Subrouter())
 	http.Handle("/", r)
 	http.ListenAndServe(configuration.Addr, nil)
 }
