@@ -30,6 +30,7 @@ func main() {
 
 	r := mux.NewRouter()
 	BasicHandler(r.PathPrefix("/basic").Subrouter())
+	JailControlHandler(r.PathPrefix("/jailControl").Subrouter())
 	http.Handle("/", r)
 	http.ListenAndServe(configuration.Addr, nil)
 }
