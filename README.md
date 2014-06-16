@@ -2,7 +2,7 @@
 
 ##Overview
 
-fail2rest is a small REST server that aims to replicate the failban-client UI
+fail2rest is a small REST server that aims to allow full administration of a fail2ban server via HTTP
 
 fail2rest will eventually be used as a backend to a small web app to make fail2ban
 administration and reporting easier.
@@ -13,12 +13,9 @@ Every PR will be merged! Feel free to open up PRs that aren't fully done, I will
 my best to finish them for you. I will make sure to review everything I can. If
 you are interested in working on fail2rest, but don't know where to start here are some ideas.
 
-* Find unimplemented fail2ban-client commands
-* Improve data assertions before json.marshall (this is really important!)
 * Document current API calls (and examples with cURL), small static website for this info
 * Start on fail2web, I would like to write this in angular, angular-ui, browserify and d3.js (Open to suggestions just most comfortable with this)
 * Write tests, and implement some post-commit system for running tests
-* Expand fail2ban-server so that we can perform more operations via socket. I would like to avoid editing files as long as possible
 
 ##License
 iThe MIT License (MIT)
