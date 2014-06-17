@@ -27,7 +27,45 @@ func jailGetHandler(res http.ResponseWriter, req *http.Request) {
 	res.Write(encodedOutput)
 }
 
+type jailBanIPBody struct {
+	IP string
+}
+
+func jailBanIPHandler(res http.ResponseWriter, req *http.Request) {
+	var input jailBanIPBody
+	err := json.NewDecoder(req.Body).Decode(&input)
+	if err != nil {
+	}
+
+	output, _ := fail2go.JailBanIP(mux.Vars(req)["jail"], input.IP)
+
+	encodedOutput, err := json.Marshal(output)
+	if err != nil {
+	}
+
+	res.Write(encodedOutput)
+}
+
+func jailUnbanIPHandler(res http.ResponseWriter, req *http.Request) {
+	var input jailBanIPBody
+	err := json.NewDecoder(req.Body).Decode(&input)
+	if err != nil {
+	}
+
+	output, _ := fail2go.JailUnbanIP(mux.Vars(req)["jail"], input.IP)
+
+	encodedOutput, err := json.Marshal(output)
+	if err != nil {
+	}
+
+	res.Write(encodedOutput)
+
+}
+
 func jailHandler(jailRouter *mux.Router) {
+	jailRouter.HandleFunc("/{jail}/banip", jailBanIPHandler).Methods("POST")
+	jailRouter.HandleFunc("/{jail}/unbanip", jailUnbanIPHandler).Methods("POST")
+
 	jailRouter.HandleFunc("/{jail}", jailGetHandler).Methods("GET")
 
 }
