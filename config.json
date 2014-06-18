@@ -1,3 +1,4 @@
 {
-  "Addr": "0.0.0.0:5000"
+  "Addr": "0.0.0.0:5000",
+  "Fail2banSocket": "/var/run/fail2ban/fail2ban.sock"
 }

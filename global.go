@@ -7,8 +7,8 @@ import (
 	"net/http"
 )
 
-func globalStatusHandler(res http.ResponseWriter, req *http.Request) {
-	globalStatus, _ := fail2go.GlobalStatus()
+func globalStatusHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Fail2goConn) {
+	globalStatus, _ := fail2goConn.GlobalStatus()
 
 	encodedOutput, err := json.Marshal(globalStatus)
 	if err != nil {
@@ -17,8 +17,8 @@ func globalStatusHandler(res http.ResponseWriter, req *http.Request) {
 	res.Write(encodedOutput)
 }
 
-func globalPingHandler(res http.ResponseWriter, req *http.Request) {
-	globalPing, _ := fail2go.GlobalPing()
+func globalPingHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Fail2goConn) {
+	globalPing, _ := fail2goConn.GlobalPing()
 
 	encodedOutput, err := json.Marshal(globalPing)
 	if err != nil {
@@ -28,7 +28,11 @@ func globalPingHandler(res http.ResponseWriter, req *http.Request) {
 
 }
 
-func globalHandler(globalRouter *mux.Router) {
-	globalRouter.HandleFunc("/status", globalStatusHandler).Methods("GET")
-	globalRouter.HandleFunc("/ping", globalPingHandler).Methods("GET")
+func globalHandler(globalRouter *mux.Router, fail2goConn *fail2go.Fail2goConn) {
+	globalRouter.HandleFunc("/status", func(res http.ResponseWriter, req *http.Request) {
+		globalStatusHandler(res, req, fail2goConn)
+	}).Methods("GET")
+	globalRouter.HandleFunc("/ping", func(res http.ResponseWriter, req *http.Request) {
+		globalPingHandler(res, req, fail2goConn)
+	}).Methods("GET")
 }

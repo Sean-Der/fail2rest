@@ -3,14 +3,18 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/Sean-Der/fail2go"
 	"github.com/gorilla/mux"
 	"net/http"
 	"os"
 )
 
 type Configuration struct {
-	Addr string
+	Addr           string
+	Fail2banSocket string
 }
+
+var fail2goConn *fail2go.Fail2goConn
 
 func main() {
 	file, fileErr := os.Open("config.json")
@@ -28,9 +32,12 @@ func main() {
 		os.Exit(1)
 	}
 
+	fail2goConn := fail2go.Newfail2goConn(configuration.Fail2banSocket)
 	r := mux.NewRouter()
-	globalHandler(r.PathPrefix("/global").Subrouter())
-	jailHandler(r.PathPrefix("/jail").Subrouter())
+
+	globalHandler(r.PathPrefix("/global").Subrouter(), fail2goConn)
+	jailHandler(r.PathPrefix("/jail").Subrouter(), fail2goConn)
+
 	http.Handle("/", r)
 	http.ListenAndServe(configuration.Addr, nil)
 }

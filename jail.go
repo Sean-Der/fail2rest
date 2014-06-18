@@ -7,9 +7,9 @@ import (
 	"net/http"
 )
 
-func jailGetHandler(res http.ResponseWriter, req *http.Request) {
-	jailStatus, _ := fail2go.JailStatus(mux.Vars(req)["jail"])
-	jailFailRegex, _ := fail2go.JailFailRegex(mux.Vars(req)["jail"])
+func jailGetHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Fail2goConn) {
+	jailStatus, _ := fail2goConn.JailStatus(mux.Vars(req)["jail"])
+	jailFailRegex, _ := fail2goConn.JailFailRegex(mux.Vars(req)["jail"])
 
 	output := make(map[string]interface{})
 
@@ -31,13 +31,13 @@ type jailBanIPBody struct {
 	IP string
 }
 
-func jailBanIPHandler(res http.ResponseWriter, req *http.Request) {
+func jailBanIPHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Fail2goConn) {
 	var input jailBanIPBody
 	err := json.NewDecoder(req.Body).Decode(&input)
 	if err != nil {
 	}
 
-	output, _ := fail2go.JailBanIP(mux.Vars(req)["jail"], input.IP)
+	output, _ := fail2goConn.JailBanIP(mux.Vars(req)["jail"], input.IP)
 
 	encodedOutput, err := json.Marshal(output)
 	if err != nil {
@@ -46,13 +46,13 @@ func jailBanIPHandler(res http.ResponseWriter, req *http.Request) {
 	res.Write(encodedOutput)
 }
 
-func jailUnbanIPHandler(res http.ResponseWriter, req *http.Request) {
+func jailUnbanIPHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Fail2goConn) {
 	var input jailBanIPBody
 	err := json.NewDecoder(req.Body).Decode(&input)
 	if err != nil {
 	}
 
-	output, _ := fail2go.JailUnbanIP(mux.Vars(req)["jail"], input.IP)
+	output, _ := fail2goConn.JailUnbanIP(mux.Vars(req)["jail"], input.IP)
 
 	encodedOutput, err := json.Marshal(output)
 	if err != nil {
@@ -62,10 +62,14 @@ func jailUnbanIPHandler(res http.ResponseWriter, req *http.Request) {
 
 }
 
-func jailHandler(jailRouter *mux.Router) {
-	jailRouter.HandleFunc("/{jail}/banip", jailBanIPHandler).Methods("POST")
-	jailRouter.HandleFunc("/{jail}/unbanip", jailUnbanIPHandler).Methods("POST")
-
-	jailRouter.HandleFunc("/{jail}", jailGetHandler).Methods("GET")
-
+func jailHandler(jailRouter *mux.Router, fail2goConn *fail2go.Fail2goConn) {
+	jailRouter.HandleFunc("/{jail}/banip", func(res http.ResponseWriter, req *http.Request) {
+		jailBanIPHandler(res, req, fail2goConn)
+	}).Methods("POST")
+	jailRouter.HandleFunc("/{jail}/unbanip", func(res http.ResponseWriter, req *http.Request) {
+		jailUnbanIPHandler(res, req, fail2goConn)
+	}).Methods("POST")
+	jailRouter.HandleFunc("/{jail}", func(res http.ResponseWriter, req *http.Request) {
+		jailGetHandler(res, req, fail2goConn)
+	}).Methods("GET")
 }
