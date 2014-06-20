@@ -63,12 +63,14 @@ func jailUnbanIPHandler(res http.ResponseWriter, req *http.Request, fail2goConn 
 }
 
 func jailHandler(jailRouter *mux.Router, fail2goConn *fail2go.Fail2goConn) {
-	jailRouter.HandleFunc("/{jail}/banip", func(res http.ResponseWriter, req *http.Request) {
+
+	jailRouter.HandleFunc("/{jail}/bannedips", func(res http.ResponseWriter, req *http.Request) {
 		jailBanIPHandler(res, req, fail2goConn)
 	}).Methods("POST")
-	jailRouter.HandleFunc("/{jail}/unbanip", func(res http.ResponseWriter, req *http.Request) {
+	jailRouter.HandleFunc("/{jail}/bannedips", func(res http.ResponseWriter, req *http.Request) {
 		jailUnbanIPHandler(res, req, fail2goConn)
-	}).Methods("POST")
+	}).Methods("DELETE")
+
 	jailRouter.HandleFunc("/{jail}", func(res http.ResponseWriter, req *http.Request) {
 		jailGetHandler(res, req, fail2goConn)
 	}).Methods("GET")
