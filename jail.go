@@ -8,19 +8,18 @@ import (
 )
 
 func jailGetHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Fail2goConn) {
-	jailStatus, _ := fail2goConn.JailStatus(mux.Vars(req)["jail"])
-	jailFailRegex, _ := fail2goConn.JailFailRegex(mux.Vars(req)["jail"])
+	currentlyFailed, totalFailed, fileList, currentlyBanned, totalBanned, IPList, _ := fail2goConn.JailStatus(mux.Vars(req)["jail"])
+	failRegexes, _ := fail2goConn.JailFailRegex(mux.Vars(req)["jail"])
 
-	output := make(map[string]interface{})
+	encodedOutput, err := json.Marshal(map[string]interface{}{
+		"currentlyFailed": currentlyFailed,
+		"totalFailed":     totalFailed,
+		"fileList":        fileList,
+		"currentlyBanned": currentlyBanned,
+		"totalBanned":     totalBanned,
+		"IPList":          IPList,
+		"failregex":       failRegexes})
 
-	for key, value := range jailStatus {
-		output[key] = value
-	}
-	for key, value := range jailFailRegex {
-		output[key] = value
-	}
-
-	encodedOutput, err := json.Marshal(output)
 	if err != nil {
 	}
 
@@ -39,7 +38,7 @@ func jailBanIPHandler(res http.ResponseWriter, req *http.Request, fail2goConn *f
 
 	output, _ := fail2goConn.JailBanIP(mux.Vars(req)["jail"], input.IP)
 
-	encodedOutput, err := json.Marshal(output)
+	encodedOutput, err := json.Marshal(map[string]interface{}{"bannedIP": output})
 	if err != nil {
 	}
 
@@ -54,7 +53,7 @@ func jailUnbanIPHandler(res http.ResponseWriter, req *http.Request, fail2goConn 
 
 	output, _ := fail2goConn.JailUnbanIP(mux.Vars(req)["jail"], input.IP)
 
-	encodedOutput, err := json.Marshal(output)
+	encodedOutput, err := json.Marshal(map[string]interface{}{"unBannedIP": output})
 	if err != nil {
 	}
 
