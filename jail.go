@@ -18,7 +18,7 @@ func jailGetHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fai
 		"currentlyBanned": currentlyBanned,
 		"totalBanned":     totalBanned,
 		"IPList":          IPList,
-		"failregex":       failRegexes})
+		"failRegexes":      failRegexes})
 
 	if err != nil {
 	}
@@ -58,16 +58,56 @@ func jailUnbanIPHandler(res http.ResponseWriter, req *http.Request, fail2goConn 
 	}
 
 	res.Write(encodedOutput)
+}
 
+type jailFailRegexBody struct {
+	FailRegex string
+}
+
+func jailAddFailRegexHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Fail2goConn) {
+	var input jailFailRegexBody
+	err := json.NewDecoder(req.Body).Decode(&input)
+	if err != nil {
+	}
+
+	output, _ := fail2goConn.JailAddFailRegex(mux.Vars(req)["jail"], input.FailRegex)
+
+	encodedOutput, err := json.Marshal(map[string]interface{}{"FailRegex": output})
+	if err != nil {
+	}
+
+	res.Write(encodedOutput)
+}
+
+func jailDeleteFailRegexHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Fail2goConn) {
+	var input jailFailRegexBody
+	err := json.NewDecoder(req.Body).Decode(&input)
+	if err != nil {
+	}
+
+	output, _ := fail2goConn.JailDeleteFailRegex(mux.Vars(req)["jail"], input.FailRegex)
+
+	encodedOutput, err := json.Marshal(map[string]interface{}{"FailRegex": output})
+	if err != nil {
+	}
+
+	res.Write(encodedOutput)
 }
 
 func jailHandler(jailRouter *mux.Router, fail2goConn *fail2go.Fail2goConn) {
 
-	jailRouter.HandleFunc("/{jail}/bannedips", func(res http.ResponseWriter, req *http.Request) {
+	jailRouter.HandleFunc("/{jail}/bannedip", func(res http.ResponseWriter, req *http.Request) {
 		jailBanIPHandler(res, req, fail2goConn)
 	}).Methods("POST")
-	jailRouter.HandleFunc("/{jail}/bannedips", func(res http.ResponseWriter, req *http.Request) {
+	jailRouter.HandleFunc("/{jail}/bannedip", func(res http.ResponseWriter, req *http.Request) {
 		jailUnbanIPHandler(res, req, fail2goConn)
+	}).Methods("DELETE")
+
+	jailRouter.HandleFunc("/{jail}/failregex", func(res http.ResponseWriter, req *http.Request) {
+		jailAddFailRegexHandler(res, req, fail2goConn)
+	}).Methods("POST")
+	jailRouter.HandleFunc("/{jail}/failregex", func(res http.ResponseWriter, req *http.Request) {
+		jailDeleteFailRegexHandler(res, req, fail2goConn)
 	}).Methods("DELETE")
 
 	jailRouter.HandleFunc("/{jail}", func(res http.ResponseWriter, req *http.Request) {
