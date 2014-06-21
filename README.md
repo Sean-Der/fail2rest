@@ -14,11 +14,10 @@ my best to finish them for you. I will make sure to review everything I can. If
 you are interested in working on fail2rest, but don't know where to start here are some ideas.
 
 * Document current API calls (and examples with cURL), small static website for this info
-* Start on fail2web, I would like to write this in angular, angular-ui, browserify and d3.js (Open to suggestions just most comfortable with this)
 * Write tests, and implement some post-commit system for running tests
 
 ##License
-iThe MIT License (MIT)
+The MIT License (MIT)
 
 Copyright (c) 2014 Sean DuBois
 
