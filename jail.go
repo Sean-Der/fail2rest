@@ -18,7 +18,7 @@ func jailGetHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fai
 		"currentlyBanned": currentlyBanned,
 		"totalBanned":     totalBanned,
 		"IPList":          IPList,
-		"failRegexes":      failRegexes})
+		"failRegexes":     failRegexes})
 
 	if err != nil {
 	}
@@ -66,13 +66,21 @@ type jailFailRegexBody struct {
 
 func jailAddFailRegexHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Fail2goConn) {
 	var input jailFailRegexBody
+	var encodedOutput []byte
+
 	err := json.NewDecoder(req.Body).Decode(&input)
 	if err != nil {
+
 	}
 
-	output, _ := fail2goConn.JailAddFailRegex(mux.Vars(req)["jail"], input.FailRegex)
+	output, err := fail2goConn.JailAddFailRegex(mux.Vars(req)["jail"], input.FailRegex)
+	if err != nil {
+		res.WriteHeader(400)
+		encodedOutput, err = json.Marshal(ErrorBody{Error: "Invalid Regex"})
+	} else {
+		encodedOutput, err = json.Marshal(map[string]interface{}{"FailRegex": output})
+	}
 
-	encodedOutput, err := json.Marshal(map[string]interface{}{"FailRegex": output})
 	if err != nil {
 	}
 

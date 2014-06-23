@@ -14,6 +14,10 @@ type Configuration struct {
 	Fail2banSocket string
 }
 
+type ErrorBody struct {
+	Error string
+}
+
 var fail2goConn *fail2go.Fail2goConn
 
 func main() {
