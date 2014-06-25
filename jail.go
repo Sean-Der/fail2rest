@@ -10,6 +10,9 @@ import (
 func jailGetHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Fail2goConn) {
 	currentlyFailed, totalFailed, fileList, currentlyBanned, totalBanned, IPList, _ := fail2goConn.JailStatus(mux.Vars(req)["jail"])
 	failRegexes, _ := fail2goConn.JailFailRegex(mux.Vars(req)["jail"])
+	findTime, _ := fail2goConn.JailFindTime(mux.Vars(req)["jail"])
+	useDNS, _ := fail2goConn.JailUseDNS(mux.Vars(req)["jail"])
+	maxRetry, _ := fail2goConn.JailMaxRetry(mux.Vars(req)["jail"])
 
 	encodedOutput, err := json.Marshal(map[string]interface{}{
 		"currentlyFailed": currentlyFailed,
@@ -18,7 +21,10 @@ func jailGetHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fai
 		"currentlyBanned": currentlyBanned,
 		"totalBanned":     totalBanned,
 		"IPList":          IPList,
-		"failRegexes":     failRegexes})
+		"failRegexes":     failRegexes,
+		"findTime":        findTime,
+		"useDNS":          useDNS,
+		"maxRetry":        maxRetry})
 
 	if err != nil {
 	}
