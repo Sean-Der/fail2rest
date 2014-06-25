@@ -108,6 +108,76 @@ func jailDeleteFailRegexHandler(res http.ResponseWriter, req *http.Request, fail
 	res.Write(encodedOutput)
 }
 
+type jailFindTimeBody struct {
+	FindTime int
+}
+
+func jailSetFindTimeHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Fail2goConn) {
+	var input jailFindTimeBody
+
+	err := json.NewDecoder(req.Body).Decode(&input)
+	if err != nil {
+	}
+
+	output, err := fail2goConn.JailSetFindTime(mux.Vars(req)["jail"], input.FindTime)
+	if err != nil {
+	}
+
+	encodedOutput, err := json.Marshal(map[string]interface{}{"FindTime": output})
+
+	if err != nil {
+	}
+
+	res.Write(encodedOutput)
+}
+
+type jailUseDNSBody struct {
+	UseDNS string
+}
+
+func jailSetUseDNSHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Fail2goConn) {
+	var input jailUseDNSBody
+
+	err := json.NewDecoder(req.Body).Decode(&input)
+	if err != nil {
+	}
+
+	output, err := fail2goConn.JailSetUseDNS(mux.Vars(req)["jail"], input.UseDNS)
+	if err != nil {
+	}
+
+	encodedOutput, err := json.Marshal(map[string]interface{}{"useDNS": output})
+
+	if err != nil {
+	}
+
+	res.Write(encodedOutput)
+}
+
+type jailMaxRetryBody struct {
+	MaxRetry int
+}
+
+func jailSetMaxRetryHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Fail2goConn) {
+	var input jailMaxRetryBody
+
+	err := json.NewDecoder(req.Body).Decode(&input)
+	if err != nil {
+	}
+
+	output, err := fail2goConn.JailSetMaxRetry(mux.Vars(req)["jail"], input.MaxRetry)
+	if err != nil {
+	}
+
+	encodedOutput, err := json.Marshal(map[string]interface{}{"maxRetry": output})
+
+	if err != nil {
+	}
+
+	res.Write(encodedOutput)
+}
+
+
 func jailHandler(jailRouter *mux.Router, fail2goConn *fail2go.Fail2goConn) {
 
 	jailRouter.HandleFunc("/{jail}/bannedip", func(res http.ResponseWriter, req *http.Request) {
@@ -123,6 +193,18 @@ func jailHandler(jailRouter *mux.Router, fail2goConn *fail2go.Fail2goConn) {
 	jailRouter.HandleFunc("/{jail}/failregex", func(res http.ResponseWriter, req *http.Request) {
 		jailDeleteFailRegexHandler(res, req, fail2goConn)
 	}).Methods("DELETE")
+
+	jailRouter.HandleFunc("/{jail}/findtime", func(res http.ResponseWriter, req *http.Request) {
+		jailSetFindTimeHandler(res, req, fail2goConn)
+	}).Methods("POST")
+
+	jailRouter.HandleFunc("/{jail}/usedns", func(res http.ResponseWriter, req *http.Request) {
+		jailSetUseDNSHandler(res, req, fail2goConn)
+	}).Methods("POST")
+
+	jailRouter.HandleFunc("/{jail}/maxretry", func(res http.ResponseWriter, req *http.Request) {
+		jailSetMaxRetryHandler(res, req, fail2goConn)
+	}).Methods("POST")
 
 	jailRouter.HandleFunc("/{jail}", func(res http.ResponseWriter, req *http.Request) {
 		jailGetHandler(res, req, fail2goConn)
