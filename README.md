@@ -7,6 +7,16 @@ fail2rest is a small REST server that aims to allow full administration of a fai
 fail2rest will eventually be used as a backend to a small web app to make fail2ban
 administration and reporting easier.
 
+##Running
+  * fail2rest is written in Go, you will need the Go distribution
+  * Install the necessary libraries `make libs`
+  * Run fail2rest `make run`
+
+##Configuration
+fail2rest has two options that be configured via config.json
+  * **Fail2banSocket** - The path to the fail2ban socket, can usually be found via `grep socket /etc/fail2ban/fail2ban.conf` you also have to run fail2rest as a user who has permissions to use this socket
+  * **Addr** - The address that fail2rest is served upon, it is usually best so serve to the loopback, and then allow access via nginx see an example config in the [fail2web](https://github.com/Sean-Der/fail2web) repository
+
 
 ##Contributing
 Every PR will be merged! Feel free to open up PRs that aren't fully done, I will do
