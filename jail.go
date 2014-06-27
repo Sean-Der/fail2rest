@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func jailGetHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Fail2goConn) {
+func jailGetHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Conn) {
 	currentlyFailed, totalFailed, fileList, currentlyBanned, totalBanned, IPList, _ := fail2goConn.JailStatus(mux.Vars(req)["jail"])
 	failRegexes, _ := fail2goConn.JailFailRegex(mux.Vars(req)["jail"])
 	findTime, _ := fail2goConn.JailFindTime(mux.Vars(req)["jail"])
@@ -36,7 +36,7 @@ type jailBanIPBody struct {
 	IP string
 }
 
-func jailBanIPHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Fail2goConn) {
+func jailBanIPHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Conn) {
 	var input jailBanIPBody
 	err := json.NewDecoder(req.Body).Decode(&input)
 	if err != nil {
@@ -51,7 +51,7 @@ func jailBanIPHandler(res http.ResponseWriter, req *http.Request, fail2goConn *f
 	res.Write(encodedOutput)
 }
 
-func jailUnbanIPHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Fail2goConn) {
+func jailUnbanIPHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Conn) {
 	var input jailBanIPBody
 	err := json.NewDecoder(req.Body).Decode(&input)
 	if err != nil {
@@ -70,7 +70,7 @@ type jailFailRegexBody struct {
 	FailRegex string
 }
 
-func jailAddFailRegexHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Fail2goConn) {
+func jailAddFailRegexHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Conn) {
 	var input jailFailRegexBody
 	var encodedOutput []byte
 
@@ -93,7 +93,7 @@ func jailAddFailRegexHandler(res http.ResponseWriter, req *http.Request, fail2go
 	res.Write(encodedOutput)
 }
 
-func jailDeleteFailRegexHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Fail2goConn) {
+func jailDeleteFailRegexHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Conn) {
 	var input jailFailRegexBody
 	err := json.NewDecoder(req.Body).Decode(&input)
 	if err != nil {
@@ -112,7 +112,7 @@ type jailFindTimeBody struct {
 	FindTime int
 }
 
-func jailSetFindTimeHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Fail2goConn) {
+func jailSetFindTimeHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Conn) {
 	var input jailFindTimeBody
 
 	err := json.NewDecoder(req.Body).Decode(&input)
@@ -135,7 +135,7 @@ type jailUseDNSBody struct {
 	UseDNS string
 }
 
-func jailSetUseDNSHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Fail2goConn) {
+func jailSetUseDNSHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Conn) {
 	var input jailUseDNSBody
 
 	err := json.NewDecoder(req.Body).Decode(&input)
@@ -158,7 +158,7 @@ type jailMaxRetryBody struct {
 	MaxRetry int
 }
 
-func jailSetMaxRetryHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Fail2goConn) {
+func jailSetMaxRetryHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Conn) {
 	var input jailMaxRetryBody
 
 	err := json.NewDecoder(req.Body).Decode(&input)
@@ -178,7 +178,7 @@ func jailSetMaxRetryHandler(res http.ResponseWriter, req *http.Request, fail2goC
 }
 
 
-func jailHandler(jailRouter *mux.Router, fail2goConn *fail2go.Fail2goConn) {
+func jailHandler(jailRouter *mux.Router, fail2goConn *fail2go.Conn) {
 
 	jailRouter.HandleFunc("/{jail}/bannedip", func(res http.ResponseWriter, req *http.Request) {
 		jailBanIPHandler(res, req, fail2goConn)

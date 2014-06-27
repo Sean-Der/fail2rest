@@ -18,7 +18,7 @@ type ErrorBody struct {
 	Error string
 }
 
-var fail2goConn *fail2go.Fail2goConn
+var fail2goConn *fail2go.Conn
 
 func main() {
 	file, fileErr := os.Open("config.json")
