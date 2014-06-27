@@ -43,5 +43,5 @@ func main() {
 	jailHandler(r.PathPrefix("/jail").Subrouter(), fail2goConn)
 
 	http.Handle("/", r)
-	http.ListenAndServe(configuration.Addr, nil)
+	fmt.Println(http.ListenAndServe(configuration.Addr, nil))
 }
