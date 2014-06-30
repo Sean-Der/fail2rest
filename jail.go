@@ -82,7 +82,7 @@ func jailAddFailRegexHandler(res http.ResponseWriter, req *http.Request, fail2go
 	output, err := fail2goConn.JailAddFailRegex(mux.Vars(req)["jail"], input.FailRegex)
 	if err != nil {
 		res.WriteHeader(400)
-		encodedOutput, err = json.Marshal(ErrorBody{Error: "Invalid Regex"})
+		encodedOutput, err = json.Marshal(ErrorBody{Error: err.Error()})
 	} else {
 		encodedOutput, err = json.Marshal(map[string]interface{}{"FailRegex": output})
 	}
@@ -176,7 +176,6 @@ func jailSetMaxRetryHandler(res http.ResponseWriter, req *http.Request, fail2goC
 
 	res.Write(encodedOutput)
 }
-
 
 func jailHandler(jailRouter *mux.Router, fail2goConn *fail2go.Conn) {
 
