@@ -18,6 +18,10 @@ func jailGetHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fai
 	if IPList == nil {
 		IPList = []string{}
 	}
+	//If failRegexes is nil/null/doesn't exist, then initialize it to an empty string array.  This resolves the front end issue where a null value is trying to be parsed for the list of regular expressions.
+	if(failRegexes == nil {
+		failRegexes = []string{}
+	}
 
 	encodedOutput, err := json.Marshal(map[string]interface{}{
 		"currentlyFailed": currentlyFailed,
