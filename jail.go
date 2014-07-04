@@ -14,12 +14,10 @@ func jailGetHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fai
 	useDNS, _ := fail2goConn.JailUseDNS(mux.Vars(req)["jail"])
 	maxRetry, _ := fail2goConn.JailMaxRetry(mux.Vars(req)["jail"])
 
-	//If IPList is nil/null/doesn't exist, then initialize it to an empty string array.  This resolves the front end issue where a null value is trying to be parsed for the ips.
 	if IPList == nil {
 		IPList = []string{}
 	}
-	//If failRegexes is nil/null/doesn't exist, then initialize it to an empty string array.  This resolves the front end issue where a null value is trying to be parsed for the list of regular expressions.
-	if(failRegexes == nil {
+	if failRegexes == nil {
 		failRegexes = []string{}
 	}
 
