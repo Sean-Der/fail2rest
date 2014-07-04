@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"path"
 	"github.com/Sean-Der/fail2go"
 	"github.com/gorilla/mux"
 	"net/http"
@@ -22,11 +21,7 @@ type ErrorBody struct {
 var fail2goConn *fail2go.Conn
 
 func main() {
-
-	//Changing path of current running directory to path of running executable for finding the config.json file.
-	//This will allow the creation of a linux service to run fail2rest (ie: service fail2rest start/stop/status)
-	var filePath string = path.Dir(os.Args[0])
-	file, fileErr := os.Open(filePath + "/config.json")
+	file, fileErr := os.Open("config.json")
 
 	if fileErr != nil {
 		fmt.Println("failed to open config:", fileErr)
