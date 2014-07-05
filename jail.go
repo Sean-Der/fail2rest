@@ -1,10 +1,13 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
 	"github.com/Sean-Der/fail2go"
 	"github.com/gorilla/mux"
 	"net/http"
+	"os"
+	"regexp"
 )
 
 func jailGetHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Conn) {
@@ -115,6 +118,43 @@ func jailDeleteFailRegexHandler(res http.ResponseWriter, req *http.Request, fail
 	res.Write(encodedOutput)
 }
 
+type RegexResult struct {
+	Line  string
+	Match bool
+}
+
+func jailTestFailRegexHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Conn) {
+	var input jailFailRegexBody
+	err := json.NewDecoder(req.Body).Decode(&input)
+	if err != nil {
+	}
+
+	regexp, err := regexp.Compile(input.FailRegex)
+
+	if err != nil {
+		res.WriteHeader(400)
+		errOutput, _ := json.Marshal(ErrorBody{Error: err.Error()})
+		res.Write(errOutput)
+		return
+	}
+
+	_, _, fileList, _, _, _, _ := fail2goConn.JailStatus(mux.Vars(req)["jail"])
+	output := make(map[string][]RegexResult)
+	for _, fileName := range fileList {
+		file, _ := os.Open(fileName)
+		scanner := bufio.NewScanner(file)
+		for scanner.Scan() {
+			output[fileName] = append(output[fileName], RegexResult{Match: regexp.MatchString(scanner.Text()), Line: scanner.Text()})
+		}
+	}
+
+	encodedOutput, err := json.Marshal(output)
+	if err != nil {
+	}
+
+	res.Write(encodedOutput)
+}
+
 type jailFindTimeBody struct {
 	FindTime int
 }
@@ -199,6 +239,10 @@ func jailHandler(jailRouter *mux.Router, fail2goConn *fail2go.Conn) {
 	jailRouter.HandleFunc("/{jail}/failregex", func(res http.ResponseWriter, req *http.Request) {
 		jailDeleteFailRegexHandler(res, req, fail2goConn)
 	}).Methods("DELETE")
+
+	jailRouter.HandleFunc("/{jail}/testfailregex", func(res http.ResponseWriter, req *http.Request) {
+		jailTestFailRegexHandler(res, req, fail2goConn)
+	}).Methods("POST")
 
 	jailRouter.HandleFunc("/{jail}/findtime", func(res http.ResponseWriter, req *http.Request) {
 		jailSetFindTimeHandler(res, req, fail2goConn)
