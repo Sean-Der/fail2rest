@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"regexp"
+	"strings"
 )
 
 func jailGetHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Conn) {
@@ -126,10 +127,11 @@ type RegexResult struct {
 func jailTestFailRegexHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Conn) {
 	var input jailFailRegexBody
 	err := json.NewDecoder(req.Body).Decode(&input)
+
 	if err != nil {
 	}
 
-	regexp, err := regexp.Compile(input.FailRegex)
+	regexp, err := regexp.Compile(strings.Replace(input.FailRegex, "<HOST>", "(?:::f{4,6}:)?(?P<host>\\S+)", -1))
 
 	if err != nil {
 		res.WriteHeader(400)
