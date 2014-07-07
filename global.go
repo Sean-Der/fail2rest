@@ -8,10 +8,17 @@ import (
 )
 
 func globalStatusHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Conn) {
-	globalStatus, _ := fail2goConn.GlobalStatus()
+	globalStatus, err := fail2goConn.GlobalStatus()
 
-	encodedOutput, err := json.Marshal(globalStatus)
 	if err != nil {
+		writeHTTPError(res, err)
+		return
+	}
+	encodedOutput, err := json.Marshal(globalStatus)
+
+	if err != nil {
+		writeHTTPError(res, err)
+		return
 	}
 
 	res.Write(encodedOutput)
