@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"github.com/Sean-Der/fail2go"
 	"github.com/gorilla/mux"
@@ -21,7 +22,10 @@ type ErrorBody struct {
 var fail2goConn *fail2go.Conn
 
 func main() {
-	file, fileErr := os.Open("config.json")
+	configPath := flag.String("config", "config.json", "path to config.json")
+	flag.Parse()
+
+	file, fileErr := os.Open(*configPath)
 
 	if fileErr != nil {
 		fmt.Println("failed to open config:", fileErr)
