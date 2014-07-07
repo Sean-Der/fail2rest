@@ -13,6 +13,8 @@ administration and reporting easier.
   * Run fail2rest `make run`
 
 ##Configuration
+fail2rest is configured via config.json in your current working directory. You can also specify a custom path with the --config flag `fail2rest --config=my_config.json`
+
 fail2rest has two options that be configured via config.json
   * **Fail2banSocket** - The path to the fail2ban socket, can usually be found via `grep socket /etc/fail2ban/fail2ban.conf` you also have to run fail2rest as a user who has permissions to use this socket
   * **Addr** - The address that fail2rest is served upon, it is usually best so serve to the loopback, and then allow access via nginx see an example config in the [fail2web](https://github.com/Sean-Der/fail2web) repository
