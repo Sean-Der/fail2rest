@@ -12,7 +12,12 @@ import (
 )
 
 func jailGetHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Conn) {
-	currentlyFailed, totalFailed, fileList, currentlyBanned, totalBanned, IPList, _ := fail2goConn.JailStatus(mux.Vars(req)["jail"])
+	currentlyFailed, totalFailed, fileList, currentlyBanned, totalBanned, IPList, err := fail2goConn.JailStatus(mux.Vars(req)["jail"])
+	if err != nil {
+		writeHTTPError(res, err)
+		return
+	}
+
 	failRegexes, _ := fail2goConn.JailFailRegex(mux.Vars(req)["jail"])
 	findTime, _ := fail2goConn.JailFindTime(mux.Vars(req)["jail"])
 	useDNS, _ := fail2goConn.JailUseDNS(mux.Vars(req)["jail"])
@@ -25,7 +30,7 @@ func jailGetHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fai
 		failRegexes = []string{}
 	}
 
-	encodedOutput, err := json.Marshal(map[string]interface{}{
+	encodedOutput, _ := json.Marshal(map[string]interface{}{
 		"currentlyFailed": currentlyFailed,
 		"totalFailed":     totalFailed,
 		"fileList":        fileList,
@@ -36,10 +41,6 @@ func jailGetHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fai
 		"findTime":        findTime,
 		"useDNS":          useDNS,
 		"maxRetry":        maxRetry})
-
-	if err != nil {
-	}
-
 	res.Write(encodedOutput)
 }
 
@@ -49,31 +50,28 @@ type jailBanIPBody struct {
 
 func jailBanIPHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Conn) {
 	var input jailBanIPBody
-	err := json.NewDecoder(req.Body).Decode(&input)
+	json.NewDecoder(req.Body).Decode(&input)
+
+	output, err := fail2goConn.JailBanIP(mux.Vars(req)["jail"], input.IP)
 	if err != nil {
+		writeHTTPError(res, err)
+		return
 	}
 
-	output, _ := fail2goConn.JailBanIP(mux.Vars(req)["jail"], input.IP)
-
-	encodedOutput, err := json.Marshal(map[string]interface{}{"bannedIP": output})
-	if err != nil {
-	}
-
+	encodedOutput, _ := json.Marshal(map[string]interface{}{"bannedIP": output})
 	res.Write(encodedOutput)
 }
 
 func jailUnbanIPHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Conn) {
 	var input jailBanIPBody
-	err := json.NewDecoder(req.Body).Decode(&input)
+	json.NewDecoder(req.Body).Decode(&input)
+	output, err := fail2goConn.JailUnbanIP(mux.Vars(req)["jail"], input.IP)
 	if err != nil {
+		writeHTTPError(res, err)
+		return
 	}
 
-	output, _ := fail2goConn.JailUnbanIP(mux.Vars(req)["jail"], input.IP)
-
-	encodedOutput, err := json.Marshal(map[string]interface{}{"unBannedIP": output})
-	if err != nil {
-	}
-
+	encodedOutput, _ := json.Marshal(map[string]interface{}{"unBannedIP": output})
 	res.Write(encodedOutput)
 }
 
@@ -83,39 +81,29 @@ type jailFailRegexBody struct {
 
 func jailAddFailRegexHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Conn) {
 	var input jailFailRegexBody
-	var encodedOutput []byte
-
-	err := json.NewDecoder(req.Body).Decode(&input)
-	if err != nil {
-
-	}
+	json.NewDecoder(req.Body).Decode(&input)
 
 	output, err := fail2goConn.JailAddFailRegex(mux.Vars(req)["jail"], input.FailRegex)
 	if err != nil {
-		res.WriteHeader(400)
-		encodedOutput, err = json.Marshal(ErrorBody{Error: err.Error()})
-	} else {
-		encodedOutput, err = json.Marshal(map[string]interface{}{"FailRegex": output})
+		writeHTTPError(res, err)
+		return
 	}
 
-	if err != nil {
-	}
-
+	encodedOutput, _ := json.Marshal(map[string]interface{}{"FailRegex": output})
 	res.Write(encodedOutput)
 }
 
 func jailDeleteFailRegexHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Conn) {
 	var input jailFailRegexBody
-	err := json.NewDecoder(req.Body).Decode(&input)
+	json.NewDecoder(req.Body).Decode(&input)
+
+	output, err := fail2goConn.JailDeleteFailRegex(mux.Vars(req)["jail"], input.FailRegex)
 	if err != nil {
+		writeHTTPError(res, err)
+		return
 	}
 
-	output, _ := fail2goConn.JailDeleteFailRegex(mux.Vars(req)["jail"], input.FailRegex)
-
-	encodedOutput, err := json.Marshal(map[string]interface{}{"FailRegex": output})
-	if err != nil {
-	}
-
+	encodedOutput, _ := json.Marshal(map[string]interface{}{"FailRegex": output})
 	res.Write(encodedOutput)
 }
 
@@ -126,34 +114,35 @@ type RegexResult struct {
 
 func jailTestFailRegexHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Conn) {
 	var input jailFailRegexBody
-	err := json.NewDecoder(req.Body).Decode(&input)
-
-	if err != nil {
-	}
+	json.NewDecoder(req.Body).Decode(&input)
 
 	regexp, err := regexp.Compile(strings.Replace(input.FailRegex, "<HOST>", "(?:::f{4,6}:)?(?P<host>\\S+)", -1))
 
 	if err != nil {
-		res.WriteHeader(400)
-		errOutput, _ := json.Marshal(ErrorBody{Error: err.Error()})
-		res.Write(errOutput)
+		writeHTTPError(res, err)
 		return
 	}
 
-	_, _, fileList, _, _, _, _ := fail2goConn.JailStatus(mux.Vars(req)["jail"])
+	_, _, fileList, _, _, _, err := fail2goConn.JailStatus(mux.Vars(req)["jail"])
+	if err != nil {
+		writeHTTPError(res, err)
+		return
+	}
+
 	output := make(map[string][]RegexResult)
 	for _, fileName := range fileList {
-		file, _ := os.Open(fileName)
+		file, err := os.Open(fileName)
+		if err != nil {
+			writeHTTPError(res, err)
+			return
+		}
 		scanner := bufio.NewScanner(file)
 		for scanner.Scan() {
 			output[fileName] = append(output[fileName], RegexResult{Match: regexp.MatchString(scanner.Text()), Line: scanner.Text()})
 		}
 	}
 
-	encodedOutput, err := json.Marshal(output)
-	if err != nil {
-	}
-
+	encodedOutput, _ := json.Marshal(output)
 	res.Write(encodedOutput)
 }
 
@@ -163,20 +152,15 @@ type jailFindTimeBody struct {
 
 func jailSetFindTimeHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Conn) {
 	var input jailFindTimeBody
-
-	err := json.NewDecoder(req.Body).Decode(&input)
-	if err != nil {
-	}
+	json.NewDecoder(req.Body).Decode(&input)
 
 	output, err := fail2goConn.JailSetFindTime(mux.Vars(req)["jail"], input.FindTime)
 	if err != nil {
+			writeHTTPError(res, err)
+			return
 	}
 
-	encodedOutput, err := json.Marshal(map[string]interface{}{"FindTime": output})
-
-	if err != nil {
-	}
-
+	encodedOutput, _ := json.Marshal(map[string]interface{}{"FindTime": output})
 	res.Write(encodedOutput)
 }
 
@@ -186,20 +170,15 @@ type jailUseDNSBody struct {
 
 func jailSetUseDNSHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Conn) {
 	var input jailUseDNSBody
-
-	err := json.NewDecoder(req.Body).Decode(&input)
-	if err != nil {
-	}
+	json.NewDecoder(req.Body).Decode(&input)
 
 	output, err := fail2goConn.JailSetUseDNS(mux.Vars(req)["jail"], input.UseDNS)
 	if err != nil {
+			writeHTTPError(res, err)
+			return
 	}
 
-	encodedOutput, err := json.Marshal(map[string]interface{}{"useDNS": output})
-
-	if err != nil {
-	}
-
+	encodedOutput, _ := json.Marshal(map[string]interface{}{"useDNS": output})
 	res.Write(encodedOutput)
 }
 
@@ -209,20 +188,15 @@ type jailMaxRetryBody struct {
 
 func jailSetMaxRetryHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Conn) {
 	var input jailMaxRetryBody
-
-	err := json.NewDecoder(req.Body).Decode(&input)
-	if err != nil {
-	}
+	json.NewDecoder(req.Body).Decode(&input)
 
 	output, err := fail2goConn.JailSetMaxRetry(mux.Vars(req)["jail"], input.MaxRetry)
 	if err != nil {
+			writeHTTPError(res, err)
+			return
 	}
 
-	encodedOutput, err := json.Marshal(map[string]interface{}{"maxRetry": output})
-
-	if err != nil {
-	}
-
+	encodedOutput, _ := json.Marshal(map[string]interface{}{"maxRetry": output})
 	res.Write(encodedOutput)
 }
 

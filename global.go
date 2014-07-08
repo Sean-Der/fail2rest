@@ -9,30 +9,25 @@ import (
 
 func globalStatusHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Conn) {
 	globalStatus, err := fail2goConn.GlobalStatus()
-
-	if err != nil {
-		writeHTTPError(res, err)
-		return
-	}
-	encodedOutput, err := json.Marshal(globalStatus)
-
 	if err != nil {
 		writeHTTPError(res, err)
 		return
 	}
 
+	encodedOutput, _ := json.Marshal(globalStatus)
 	res.Write(encodedOutput)
 }
 
 func globalPingHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Conn) {
-	globalPing, _ := fail2goConn.GlobalPing()
-
-	encodedOutput, err := json.Marshal(globalPing)
+	globalPing, err := fail2goConn.GlobalPing()
 	if err != nil {
+		writeHTTPError(res, err)
+		return
 	}
 
-	res.Write(encodedOutput)
 
+	encodedOutput, _ := json.Marshal(globalPing)
+	res.Write(encodedOutput)
 }
 
 func globalHandler(globalRouter *mux.Router, fail2goConn *fail2go.Conn) {
