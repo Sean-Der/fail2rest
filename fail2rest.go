@@ -41,6 +41,9 @@ func main() {
 
 	globalHandler(r.PathPrefix("/global").Subrouter(), fail2goConn)
 	jailHandler(r.PathPrefix("/jail").Subrouter(), fail2goConn)
+	r.HandleFunc("/whois/{object}", func(res http.ResponseWriter, req *http.Request) {
+		whoisHandler(res, req, fail2goConn)
+	}).Methods("GET")
 
 	http.Handle("/", r)
 	fmt.Println(http.ListenAndServe(configuration.Addr, nil))
