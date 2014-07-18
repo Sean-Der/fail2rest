@@ -1,32 +1,42 @@
-# fail2rest
+#fail2rest
 
 ##Overview
-
 fail2rest is a small REST server that aims to allow full administration of a fail2ban server via HTTP
 
 fail2rest will eventually be used as a backend to a small web app to make fail2ban
 administration and reporting easier.
 
-##Running
-  * fail2rest is written in Go, you will need the Go distribution
-  * Install the necessary libraries `make libs`
-  * Run fail2rest `make run`
+##Requirements
+fail2rest is written in Golang, so it requires a working Golang installation. If you have never used Golang before install it from your
+package manager, and then follow [these](http://golang.org/doc/code.html) instructions to setup your enviroment.
+
+Some libraries currently are not building on older versions of Go, I recommend running the newest stable of Golang.
+
+##Installing
+Once you have a working Golang installation all you need to do is run
+
+    go get -v github.com/Sean-Der/fail2rest
+    go install -v github.com/Sean-Der/fail2rest
+
+fail2rest will now be available as a binary in your GOPATH, you can run 'fail2rest' from the command line, or copy it
+somewhere else to make it available to all users.
+
+Use `whereis fail2rest` to locate your fail2rest binary.
+Next you need to configure fail2rest, and then finally make it a system service.
 
 ##Configuration
-fail2rest is configured via config.json in your current working directory. You can also specify a custom path with the --config flag `fail2rest --config=my_config.json`
+fail2rest is configured via config.json, the default is located [here](https://raw.githubusercontent.com/Sean-Der/fail2rest/master/config.json).
+To load your config.json you use the --config flag `fail2rest --config=my_config.json`
 
 fail2rest has two options that be configured via config.json
   * **Fail2banSocket** - The path to the fail2ban socket, can usually be found via `grep socket /etc/fail2ban/fail2ban.conf` you also have to run fail2rest as a user who has permissions to use this socket
   * **Addr** - The address that fail2rest is served upon, it is usually best so serve to the loopback, and then allow access via nginx see an example config in the [fail2web](https://github.com/Sean-Der/fail2web) repository
 
+##Running
+Once you have a config.json all you need to do is run `fail2rest --config config.json`
 
-##Contributing
-Every PR will be merged! Feel free to open up PRs that aren't fully done, I will do
-my best to finish them for you. I will make sure to review everything I can. If
-you are interested in working on fail2rest, but don't know where to start here are some ideas.
-
-* Document current API calls (and examples with cURL), small static website for this info
-* Write tests, and implement some post-commit system for running tests
+However, fail2rest is designed to run as a service, so init scripts are provided that allow easy management of fail2rest. They can be found [here](https://github.com/Sean-Der/fail2rest/init-scripts)
+Download the appropriate init file your Distribution. You may need to customize your init script to load your config.json, but most scripts default to /etc/fail2rest.json
 
 ##License
 The MIT License (MIT)
