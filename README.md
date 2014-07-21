@@ -35,7 +35,7 @@ fail2rest has two options that be configured via config.json
 ##Running
 Once you have a config.json all you need to do is run `fail2rest --config config.json`
 
-However, fail2rest is designed to run as a service, so init scripts are provided that allow easy management of fail2rest. They can be found [here](https://github.com/Sean-Der/fail2rest/init-scripts)
+However, fail2rest is designed to run as a service, so init scripts are provided that allow easy management of fail2rest. They can be found [here](https://github.com/Sean-Der/fail2rest/tree/master/init-scripts)
 Download the appropriate init file your Distribution. You may need to customize your init script to load your config.json, but most scripts default to /etc/fail2rest.json
 
 ##License
