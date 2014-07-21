@@ -21,7 +21,7 @@ fi
 
 
 USER="root"
-#FIXME
+#FIXME your GOPATH
 GOPATH="GOPATH"
 WORKDIR="/var/run/fail2ban"
 #FIXME path to your fail2rest binary
