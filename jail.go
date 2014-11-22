@@ -203,6 +203,18 @@ func jailSetMaxRetryHandler(res http.ResponseWriter, req *http.Request, fail2goC
 	res.Write(encodedOutput)
 }
 
+func jailActionHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Conn) {
+	port, err := fail2goConn.JailActionProperty(mux.Vars(req)["jail"], mux.Vars(req)["action"], "port")
+	if err != nil {
+		writeHTTPError(res, err)
+		return
+	}
+
+	encodedOutput, _ := json.Marshal(map[string]interface{}{
+		"port": port})
+	res.Write(encodedOutput)
+}
+
 func jailHandler(jailRouter *mux.Router, fail2goConn *fail2go.Conn) {
 
 	jailRouter.HandleFunc("/{jail}/bannedip", func(res http.ResponseWriter, req *http.Request) {
@@ -234,6 +246,10 @@ func jailHandler(jailRouter *mux.Router, fail2goConn *fail2go.Conn) {
 	jailRouter.HandleFunc("/{jail}/maxretry", func(res http.ResponseWriter, req *http.Request) {
 		jailSetMaxRetryHandler(res, req, fail2goConn)
 	}).Methods("POST")
+
+	jailRouter.HandleFunc("/{jail}/action/{action}", func(res http.ResponseWriter, req *http.Request) {
+		jailActionHandler(res, req, fail2goConn)
+	}).Methods("GET")
 
 	jailRouter.HandleFunc("/{jail}", func(res http.ResponseWriter, req *http.Request) {
 		jailGetHandler(res, req, fail2goConn)
