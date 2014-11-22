@@ -3,12 +3,13 @@ package main
 import (
 	"bufio"
 	"encoding/json"
-	"github.com/Sean-Der/fail2go"
-	"github.com/gorilla/mux"
 	"net/http"
 	"os"
 	"regexp"
 	"strings"
+
+	"github.com/Sean-Der/fail2go"
+	"github.com/gorilla/mux"
 )
 
 func jailGetHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Conn) {
@@ -22,6 +23,7 @@ func jailGetHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fai
 	findTime, _ := fail2goConn.JailFindTime(mux.Vars(req)["jail"])
 	useDNS, _ := fail2goConn.JailUseDNS(mux.Vars(req)["jail"])
 	maxRetry, _ := fail2goConn.JailMaxRetry(mux.Vars(req)["jail"])
+	actions, _ := fail2goConn.JailActions(mux.Vars(req)["jail"])
 
 	if IPList == nil {
 		IPList = []string{}
@@ -40,7 +42,8 @@ func jailGetHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fai
 		"failRegexes":     failRegexes,
 		"findTime":        findTime,
 		"useDNS":          useDNS,
-		"maxRetry":        maxRetry})
+		"maxRetry":        maxRetry,
+		"actions":         actions})
 	res.Write(encodedOutput)
 }
 
@@ -156,8 +159,8 @@ func jailSetFindTimeHandler(res http.ResponseWriter, req *http.Request, fail2goC
 
 	output, err := fail2goConn.JailSetFindTime(mux.Vars(req)["jail"], input.FindTime)
 	if err != nil {
-			writeHTTPError(res, err)
-			return
+		writeHTTPError(res, err)
+		return
 	}
 
 	encodedOutput, _ := json.Marshal(map[string]interface{}{"FindTime": output})
@@ -174,8 +177,8 @@ func jailSetUseDNSHandler(res http.ResponseWriter, req *http.Request, fail2goCon
 
 	output, err := fail2goConn.JailSetUseDNS(mux.Vars(req)["jail"], input.UseDNS)
 	if err != nil {
-			writeHTTPError(res, err)
-			return
+		writeHTTPError(res, err)
+		return
 	}
 
 	encodedOutput, _ := json.Marshal(map[string]interface{}{"useDNS": output})
@@ -192,8 +195,8 @@ func jailSetMaxRetryHandler(res http.ResponseWriter, req *http.Request, fail2goC
 
 	output, err := fail2goConn.JailSetMaxRetry(mux.Vars(req)["jail"], input.MaxRetry)
 	if err != nil {
-			writeHTTPError(res, err)
-			return
+		writeHTTPError(res, err)
+		return
 	}
 
 	encodedOutput, _ := json.Marshal(map[string]interface{}{"maxRetry": output})
