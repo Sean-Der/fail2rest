@@ -46,10 +46,10 @@ However, fail2rest is designed to run as a service, so init scripts are provided
 Download the appropriate init file your Distribution. You may need to customize your init script to load your config.json, but most scripts default to /etc/fail2rest.json
 
 ##Service
-To run as a service you can either copy or create a symlink for the script file to /etc/systemd/system/fail2rest.service and for the binary to /usr/bin/fail2rest
+To run as a service you can either copy or create a symlink for the script file to /etc/systemd/system/fail2rest.service and for the binary to /usr/bin/fail2rest. In this scenario will use the symlink to always use the latest files. If should run with sudo if not logged in as root:
 
     ln -s $GOPATH/bin/fail2rest /usr/bin/
-    ln -s $GOPATH//src/github.com/Sean-Der/fail2rest/init-scripts/systemd /etc/systemd/system/fail2rest.service
+    ln -s $GOPATH/src/github.com/Sean-Der/fail2rest/init-scripts/systemd /etc/systemd/system/fail2rest.service
 
 Than you can run the systemd commands for starting
     
