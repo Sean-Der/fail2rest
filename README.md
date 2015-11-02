@@ -51,11 +51,11 @@ To run as a service you can either copy or create a symlink for the script file 
     ln -s $GOPATH/bin/fail2rest /usr/bin/
     ln -s $GOPATH/src/github.com/Sean-Der/fail2rest/init-scripts/systemd /etc/systemd/system/fail2rest.service
 
-Than you can run the systemd commands for starting
+Than you can run the systemd commands for starting the fail2rest service
     
     systemctl start fail2rest.service
 
-Verify it is active and running
+Verify the fail2rest service is active and running
 
     systemctl status fail2rest.service
 
