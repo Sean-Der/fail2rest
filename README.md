@@ -32,11 +32,32 @@ fail2rest has two options that be configured via config.json
   * **Fail2banSocket** - The path to the fail2ban socket, can usually be found via `grep socket /etc/fail2ban/fail2ban.conf` you also have to run fail2rest as a user who has permissions to use this socket
   * **Addr** - The address that fail2rest is served upon, it is usually best so serve to the loopback, and then allow access via nginx see an example config in the [fail2web](https://github.com/Sean-Der/fail2web) repository
 
+The default configuration file used by init-scripts is `/etc/fail2rest.json`. You should download the config to your /tmp/ dir and modify it to your needs. 
+
+    cd /tmp/
+    wget https://raw.githubusercontent.com/Sean-Der/fail2rest/master/config.json
+    
+Once you finished editing the configuration file, you should move it from /tmp/config.json to /etc/fail2rest.json executing `mv /tmp/config.json /etc/fail2rest.json`
+
 ##Running
 Once you have a config.json all you need to do is run `fail2rest --config config.json`
 
 However, fail2rest is designed to run as a service, so init scripts are provided that allow easy management of fail2rest. They can be found [here](https://github.com/Sean-Der/fail2rest/tree/master/init-scripts)
 Download the appropriate init file your Distribution. You may need to customize your init script to load your config.json, but most scripts default to /etc/fail2rest.json
+
+##Service
+To run as a service you can either copy or create a symlink for the script file to /etc/systemd/system/fail2rest.service and for the binary to /usr/bin/fail2rest. In this scenario will use the symlink to always use the latest files. You should run with sudo if not logged in as root:
+
+    ln -s $GOPATH/bin/fail2rest /usr/bin/
+    ln -s $GOPATH/src/github.com/Sean-Der/fail2rest/init-scripts/systemd /etc/systemd/system/fail2rest.service
+
+Than you can run the systemd commands for starting the fail2rest service
+    
+    systemctl start fail2rest.service
+
+Verify the fail2rest service is active and running
+
+    systemctl status fail2rest.service
 
 ##License
 The MIT License (MIT)
