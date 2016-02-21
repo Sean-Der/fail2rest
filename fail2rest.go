@@ -8,14 +8,27 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"os"
+	"strings"
 )
 
 type Configuration struct {
 	Addr           string
 	Fail2banSocket string
+	ControllerIp   string
 }
 
 var fail2goConn *fail2go.Conn
+
+func controllerIpFilterMiddleware(h http.Handler, allowedIpAddress string) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		requestSource := strings.Split(r.RemoteAddr, ":")
+		if requestSource[0] != allowedIpAddress {
+			http.Error(w, "Not authorized", http.StatusForbidden)
+			return
+		}
+		h.ServeHTTP(w, r)
+	})
+}
 
 func main() {
 	configPath := flag.String("config", "config.json", "path to config.json")
@@ -45,6 +58,6 @@ func main() {
 		whoisHandler(res, req, fail2goConn)
 	}).Methods("GET")
 
-	http.Handle("/", r)
+	http.Handle("/", controllerIpFilterMiddleware(r, configuration.ControllerIp))
 	fmt.Println(http.ListenAndServe(configuration.Addr, nil))
 }

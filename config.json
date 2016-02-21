@@ -1,4 +1,5 @@
 {
   "Addr": "127.0.0.1:5000",
-  "Fail2banSocket": "/var/run/fail2ban/fail2ban.sock"
+  "Fail2banSocket": "/var/run/fail2ban/fail2ban.sock",
+  "ControllerIp": "127.0.0.1"
 }
