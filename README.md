@@ -1,18 +1,18 @@
-#fail2rest
+# fail2rest
 
-##Overview
+## Overview
 fail2rest is a small REST server that aims to allow full administration of a fail2ban server via HTTP
 
 fail2rest will eventually be used as a backend to a small web app to make fail2ban
 administration and reporting easier.
 
-##Requirements
+## Requirements
 fail2rest is written in Golang, so it requires a working Golang installation. If you have never used Golang before install it from your
 package manager, and then follow [these](http://golang.org/doc/code.html) instructions to setup your enviroment.
 
 Some libraries currently are not building on older versions of Go, I recommend running the newest stable of Golang.
 
-##Installing
+## Installing
 Once you have a working Golang installation all you need to do is run
 
     go get -v github.com/Sean-Der/fail2rest
@@ -24,7 +24,7 @@ somewhere else to make it available to all users.
 Use `whereis fail2rest` to locate your fail2rest binary.
 Next you need to configure fail2rest, and then finally make it a system service.
 
-##Configuration
+## Configuration
 fail2rest is configured via config.json, the default is located [here](https://raw.githubusercontent.com/Sean-Der/fail2rest/master/config.json).
 To load your config.json you use the --config flag `fail2rest --config=my_config.json`
 
@@ -39,14 +39,14 @@ The default configuration file used by init-scripts is `/etc/fail2rest.json`. Yo
 
 Once you finished editing the configuration file, you should move it from /tmp/config.json to /etc/fail2rest.json executing `mv /tmp/config.json /etc/fail2rest.json`
 
-##Running
+## Running
 Once you have a config.json all you need to do is run `fail2rest --config config.json`
 
 However, fail2rest is designed to run as a service, so init scripts are provided that allow easy management of fail2rest. They can be found [here](https://github.com/Sean-Der/fail2rest/tree/master/init-scripts)
 Download the appropriate init file your Distribution. You may need to customize your init script to load your config.json, but most scripts default to /etc/fail2rest.json
 
-##Service
-###systemd
+## Service
+### systemd
 To run as a service you can either copy or create symlinks for systemd and the fail2rest binary. The systemd file shold be added to /etc/systemd/system/fail2rest.service and the the binary to /usr/bin/fail2rest. This scenario will use the symlinks in order to always use the latest files. You should run the commands with sudo if not logged in as root:
 
     ln -s $GOPATH/bin/fail2rest /usr/bin/
@@ -71,7 +71,7 @@ Verify that the fail2rest service it is active and running
 
     systemctl status fail2rest.service
 
-##License
+## License
 The MIT License (MIT)
 
 Copyright (c) 2014 Sean DuBois
