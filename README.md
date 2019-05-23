@@ -53,23 +53,23 @@ To run as a service you can either copy or create symlinks for systemd and the f
 
 Debian
 
-    ln -s $GOPATH/src/github.com/Sean-Der/fail2rest/init-scripts/systemd /etc/systemd/system/fail2rest.service
+    ln -s $GOPATH/src/github.com/Sean-Der/fail2rest/init-scripts/systemd/fail2rest.service /etc/systemd/system/fail2rest.service
 
 Other Linux
 
-    ln -s $GOPATH/src/github.com/Sean-Der/fail2rest/init-scripts/systemd /usr/lib/systemd/system/fail2rest.service
+    ln -s $GOPATH/src/github.com/Sean-Der/fail2rest/init-scripts/debian/fail2rest.service /usr/lib/systemd/system/fail2rest.service
 
 Enable fail2rest service to run at startup
 
-    systemctl enable fail2rest.service
+    systemctl enable fail2rest
 
 Run the following systemd command to start the fail2rest service
 
-    systemctl start fail2rest.service
+    systemctl start fail2rest
 
 Verify that the fail2rest service it is active and running
 
-    systemctl status fail2rest.service
+    systemctl status fail2rest
 
 ## License
 The MIT License (MIT)
