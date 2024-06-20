@@ -8,8 +8,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/Sean-Der/fail2go"
 	"github.com/gorilla/mux"
+	"github.com/sean-der/fail2go"
 )
 
 func jailGetHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Conn) {

@@ -2,10 +2,11 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/Sean-Der/fail2go"
-	"github.com/Sean-Der/goWHOIS"
-	"github.com/gorilla/mux"
 	"net/http"
+
+	"github.com/gorilla/mux"
+	"github.com/sean-der/fail2go"
+	"github.com/sean-der/goWHOIS"
 )
 
 func whoisHandler(res http.ResponseWriter, req *http.Request, fail2goConn *fail2go.Conn) {

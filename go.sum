@@ -1,0 +1,10 @@
+github.com/gorilla/mux v1.8.1 h1:TuBL49tXwgrFYWhqrNgrUNEY92u81SPhu7sTdzQEiWY=
+github.com/gorilla/mux v1.8.1/go.mod h1:AKf9I4AEqPTmMytcMc0KkNouC66V3BtZ4qD5fmWSiMQ=
+github.com/kisielk/og-rek v1.2.0 h1:CTvDIin+YnetsSQAYbe+QNAxXU3B50C5hseEz8xEoJw=
+github.com/kisielk/og-rek v1.2.0/go.mod h1:6ihsOSzSAxR/65S3Bn9zNihoEqRquhDQZ2c6I2+MG3c=
+github.com/mattn/go-sqlite3 v1.14.22 h1:2gZY6PC6kBnID23Tichd1K+Z0oS6nE/XwU+Vz/5o4kU=
+github.com/mattn/go-sqlite3 v1.14.22/go.mod h1:Uh1q+B4BYcTPb+yiD3kU8Ct7aC0hY9fxUwlHK0RXw+Y=
+github.com/sean-der/fail2go v0.0.1 h1:AOZ5b/ewYzStnhsPXO/bLWzg97eogEV4gXkiwEJKLxU=
+github.com/sean-der/fail2go v0.0.1/go.mod h1:xfDepiRfuCxHX5LZyBl4nAIUvL+8Aed6o8fcxvCMPD4=
+github.com/sean-der/goWHOIS v0.0.0-20140709054325-70c302b526cf h1:EmuSitACP3cGjR5/KrEUiyDXPCDI6MNoPzrt4weR0Fw=
+github.com/sean-der/goWHOIS v0.0.0-20140709054325-70c302b526cf/go.mod h1:VrJMtetl51Wyuc1JaF5UhewOiLRYBN1PozQtYJp8vCY=

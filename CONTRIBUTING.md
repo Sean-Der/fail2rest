@@ -3,7 +3,7 @@ To quickly run fail2rest just execute `go run *.go`
 
 #Guidelines
 
-* Put as much logic as possible into [fail2go](https://github.com/Sean-Der/fail2go)
+* Put as much logic as possible into [fail2go](https://github.com/sean-der/fail2go)
 * Make sure code is properly formated [gofmt](http://blog.golang.org/go-fmt-your-code)
 * Make sure you code compiles
 * If adding new REST endpoints try to follow the current style

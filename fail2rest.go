@@ -4,10 +4,11 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"github.com/Sean-Der/fail2go"
-	"github.com/gorilla/mux"
 	"net/http"
 	"os"
+
+	"github.com/gorilla/mux"
+	"github.com/sean-der/fail2go"
 )
 
 type Configuration struct {
